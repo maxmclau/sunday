@@ -1,23 +1,53 @@
 package sunday
 
 import (
-  "github.com/codeskyblue/go-sh"
-  "strconv"
   "fmt"
+  "time"
+  "github.com/maxmclau/gput"
 )
 
-func clear() {
-  sh.Command("tput", "clear").Run()
+type Shape struct {
+  X int
+  Y int
+  Width int
+  Height int
+  Fill bool
+  FillColor int
+  Pop bool
+  PopColor int
 }
 
-func move(x int, y int) {
-  sh.Command("tput", "cup",  strconv.Itoa(y), strconv.Itoa(x)).Run()
+func Begin() {
+  gput.Clear()
 }
 
-func Header(x int, y int) {
-  clear();
+func Exit() {
+  gput.Cup(0, (gput.Lines() - 2))
+  gput.Sgr0()
+  gput.Dim()
+  fmt.Println(" ")
+}
 
-  move(x, y);
+func (s Shape) Render(speed time.Duration) {
+  if s.Pop {
+    fill(s.X + 2, s.Y + 1, s.Width, s.Height, s.PopColor, speed)
+  }
 
-  fmt.Println("Hello")
+  if s.Fill {
+    fill(s.X, s.Y, s.Width, s.Height, s.FillColor, speed)
+  }
+}
+
+func fill(x int, y int, width int, height int, color int, speed time.Duration) {
+  gput.Setab(color)
+
+  for h := 0; h < height; h++ {
+    gput.Cup(x, (y + h))
+
+    for w := 0; w < width; w++ {
+      fmt.Printf(" ")
+
+      time.Sleep(speed * time.Millisecond)
+    }
+  }
 }
