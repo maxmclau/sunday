@@ -11,7 +11,14 @@ $ go get github.com/maxmclau/sunday
 #### Usage
 
 ```Go
+package main
+
+import (
+    "github.com/maxmclau/sunday"
+)
+
 ...
+
 ```
 
 #### License
